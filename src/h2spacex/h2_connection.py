@@ -58,10 +58,17 @@ class H2Connection:
         }
 
     def setup_connection(self):
-        """
-        TODO
-        :return:
-        """
+        try:
+            self._create_raw_socket()
+            self._send_h2_connection_preface()  # send HTTP/2 Connection Preface
+            self._send_client_initial_settings_frame()  # send client initial settings frame to server
+        except Exception as e:
+            t = '# Error in setting the connection up : ' + str(e)
+            logger.logger_print(t)
+            raise e
+
+        else:
+            self.is_connection_closed = False
 
     def __thread_response_frame_parsing(self, _timeout=0.5, print_responses=False):
         """
