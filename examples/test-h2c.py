@@ -59,4 +59,12 @@ h2_conn.send_frames(temp_data_bytes)
 resp = h2_conn.read_response_from_socket(_timeout=10)
 frame_parser = h2_frames.FrameParser(h2_connection=h2_conn)
 frame_parser.add_frames(resp)
-frame_parser.show_response_of_sent_requests()
+
+h2_conn.close_connection()
+
+for x in frame_parser.headers_and_data_frames.keys():
+    sid = str(x)
+    d = frame_parser.headers_and_data_frames[x]
+    print(f'Stream ID: {sid}, response nano seconds: {d["nano_seconds"]}')
+    print(f'Headers: {str(d["header"])}')
+    print(f'Body (DATA): {str(d["data"])}')
